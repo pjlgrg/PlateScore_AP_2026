@@ -1,0 +1,39 @@
+erDiagram
+    direction LR
+    dishes {
+        integer dish_id PK
+        varchar dish_name UK
+        varchar description
+    }
+    meals {
+        integer meal_id PK
+        varchar meal_type UK "UK1: meal_type and meal_date together"
+        date meal_date UK "UK1: meal_type and meal_date together"
+        integer published_by FK
+        boolean is_published
+    }
+    menu_items {
+        integer meal_id PK,FK
+        integer dish_id PK,FK
+    }
+    ratings {
+        integer rating_id PK
+        integer user_id FK,UK "UK2: user_id and meal_id together"
+        integer meal_id FK,UK "UK2: user_id and meal_id together"
+        smallint score
+        varchar comment
+        timestamptz rated_at
+    }
+    users {
+        integer user_id PK
+        varchar full_name
+        varchar email UK
+        text password_hash
+        varchar role
+        timestamptz created_at
+    }
+    users ||--o{ meals : publishes
+    users ||--o{ ratings : writes
+    meals ||--o{ ratings : receives
+    meals ||--o{ menu_items : contains
+    dishes ||--o{ menu_items : served_in
